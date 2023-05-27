@@ -1,0 +1,79 @@
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+
+public class TrafficLightsGUI extends Application {
+    @Override
+    public void start(Stage primaryStage) {
+        // Create the circles for the traffic lights
+        Circle[] trafficLights = new Circle[4];
+        for (int i = 0; i < trafficLights.length; i++) {
+            trafficLights[i] = new Circle(50, Color.GRAY);
+        }
+
+        // Set the initial colors for the traffic lights
+        trafficLights[0].setFill(Color.RED);
+        trafficLights[1].setFill(Color.GRAY);
+        trafficLights[2].setFill(Color.GRAY);
+        trafficLights[3].setFill(Color.GRAY);
+
+        // Create buttons to control the traffic lights
+        Button[] buttons = new Button[4];
+        buttons[0] = new Button("Red");
+        buttons[1] = new Button("Green");
+        buttons[2] = new Button("Yellow");
+        buttons[3] = new Button("Reset");
+
+        // Set event handlers for the buttons
+        buttons[0].setOnAction(e -> {
+            trafficLights[0].setFill(Color.RED);
+            trafficLights[1].setFill(Color.GRAY);
+            trafficLights[2].setFill(Color.GRAY);
+            trafficLights[3].setFill(Color.GRAY);
+        });
+
+        buttons[1].setOnAction(e -> {
+            trafficLights[0].setFill(Color.GRAY);
+            trafficLights[1].setFill(Color.GREEN);
+            trafficLights[2].setFill(Color.GRAY);
+            trafficLights[3].setFill(Color.GRAY);
+        });
+
+        buttons[2].setOnAction(e -> {
+            trafficLights[0].setFill(Color.GRAY);
+            trafficLights[1].setFill(Color.GRAY);
+            trafficLights[2].setFill(Color.YELLOW);
+            trafficLights[3].setFill(Color.GRAY);
+        });
+
+        buttons[3].setOnAction(e -> {
+            trafficLights[0].setFill(Color.GRAY);
+            trafficLights[1].setFill(Color.GRAY);
+            trafficLights[2].setFill(Color.GRAY);
+            trafficLights[3].setFill(Color.GRAY);
+        });
+
+        // Create a grid pane to arrange the traffic lights and buttons
+        GridPane gridPane = new GridPane();
+        gridPane.setVgap(20);
+        gridPane.setHgap(20);
+        gridPane.addRow(0, trafficLights[0], trafficLights[1]);
+        gridPane.addRow(1, trafficLights[2], trafficLights[3]);
+        gridPane.addRow(2, buttons[0], buttons[1]);
+        gridPane.addRow(3, buttons[2], buttons[3]);
+
+        // Create the scene and set it on the primary stage
+        Scene scene = new Scene(gridPane, 300, 300);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Signal Cast");
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
