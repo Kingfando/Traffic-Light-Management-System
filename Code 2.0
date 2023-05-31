@@ -1,0 +1,118 @@
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+public class TrafficLightManagementSystem extends Application {
+
+    private static final Duration LIGHT_DURATION = Duration.seconds(5);
+    private static final Duration YELLOW_DURATION = Duration.seconds(2);
+
+    private TrafficLight[] trafficLights;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+
+        trafficLights = new TrafficLight[4];
+        trafficLights[0] = new TrafficLight();
+        trafficLights[1] = new TrafficLight();
+        trafficLights[2] = new TrafficLight();
+        trafficLights[3] = new TrafficLight();
+
+        gridPane.add(trafficLights[0], 0, 1);
+        gridPane.add(trafficLights[1], 2, 0);
+        gridPane.add(trafficLights[2], 3, 2);
+        gridPane.add(trafficLights[3], 1, 3);
+
+        Scene scene = new Scene(gridPane, 300, 300);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Traffic Light Management System");
+        primaryStage.show();
+
+        // Start the traffic light timers
+        startTimers();
+    }
+
+    private void startTimers() {
+        for (int i = 0; i < trafficLights.length; i++) {
+            int nextLightIndex = (i + 1) % trafficLights.length;
+            TrafficLight currentLight = trafficLights[i];
+            TrafficLight nextLight = trafficLights[nextLightIndex];
+
+            Timeline timeline = new Timeline();
+            timeline.setCycleCount(Animation.INDEFINITE);
+
+            KeyFrame greenFrame = new KeyFrame(LIGHT_DURATION, e -> {
+                currentLight.setToGreen();
+                nextLight.setToRed();
+            });
+
+            KeyFrame yellowFrame = new KeyFrame(LIGHT_DURATION.add(YELLOW_DURATION), e -> {
+                currentLight.setToYellow();
+            });
+
+            timeline.getKeyFrames().addAll(greenFrame, yellowFrame);
+            timeline.play();
+        }
+    }
+
+    private static class TrafficLight extends GridPane {
+        private Circle redLight;
+        private Circle yellowLight;
+        private Circle greenLight;
+
+        public TrafficLight() {
+            setAlignment(Pos.CENTER);
+
+            redLight = createLight(Color.RED);
+            yellowLight = createLight(Color.YELLOW);
+            greenLight = createLight(Color.GREEN);
+
+            add(redLight, 0, 0);
+            add(yellowLight, 0, 1);
+            add(greenLight, 0, 2);
+
+            setToRed();
+        }
+
+        private Circle createLight(Color color) {
+            Circle light = new Circle(20);
+            light.setFill(color);
+            light.setStroke(Color.BLACK);
+            return light;
+        }
+
+        public void setToRed() {
+            redLight.setVisible(true);
+            yellowLight.setVisible(false);
+            greenLight.setVisible(false);
+        }
+
+        public void setToYellow() {
+            redLight.setVisible(false);
+            yellowLight.setVisible(true);
+            greenLight.setVisible(false);
+        }
+
+        public void setToGreen() {
+            redLight.setVisible(false);
+            yellowLight.setVisible(false);
+            greenLight.setVisible(true);
+        }
+    }
+}
