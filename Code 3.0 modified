@@ -14,7 +14,7 @@ import javafx.animation.Animation;
         import javafx.util.Duration;
 
 public class App extends Application {
-    private static final Duration SIGNAL_DURATION = Duration.seconds(5);
+    private static final Duration SIGNAL_DURATION = Duration.seconds(2);
     private static final Color RED_COLOR = Color.RED;
     private static final Color YELLOW_COLOR = Color.YELLOW;
     private static final Color GREEN_COLOR = Color.GREEN;
@@ -83,7 +83,15 @@ public class App extends Application {
                 new KeyFrame(SIGNAL_DURATION.multiply(2), event -> setNorthSouthSignal(GREEN_COLOR, RED_COLOR,RED_COLOR,RED_COLOR)),
                 new KeyFrame(SIGNAL_DURATION, event -> setNorthSouthSignal(GREEN_COLOR, RED_COLOR,RED_COLOR,RED_COLOR)),
                 new KeyFrame(SIGNAL_DURATION.multiply(3), event -> setNorthSouthSignal(GREEN_COLOR,YELLOW_COLOR,RED_COLOR,RED_COLOR)),
-                new KeyFrame(SIGNAL_DURATION.multiply(4), event -> setNorthSouthSignal(RED_COLOR,GREEN_COLOR,RED_COLOR,RED_COLOR))
+                new KeyFrame(SIGNAL_DURATION.multiply(4), event -> setNorthSouthSignal(RED_COLOR,GREEN_COLOR,RED_COLOR,RED_COLOR)),
+                new KeyFrame(SIGNAL_DURATION.multiply(5), event -> setNorthSouthSignal( RED_COLOR,GREEN_COLOR,YELLOW_COLOR,RED_COLOR)),
+                new KeyFrame(SIGNAL_DURATION.multiply(6), event -> setNorthSouthSignal(RED_COLOR,RED_COLOR,GREEN_COLOR,RED_COLOR)),
+                new KeyFrame(SIGNAL_DURATION.multiply(7), event -> setNorthSouthSignal( RED_COLOR,RED_COLOR,GREEN_COLOR,YELLOW_COLOR)),
+                new KeyFrame(SIGNAL_DURATION.multiply(8), event -> setNorthSouthSignal( RED_COLOR,RED_COLOR,RED_COLOR,GREEN_COLOR))
+
+                
+
+
                 //new KeyFrame(SIGNAL_DURATION.multiply(2), event -> setNorthSouthSignal(GREEN_COLOR, RED_COLOR)),
                 //new KeyFrame(SIGNAL_DURATION.multiply(3), event -> setNorthSouthSignal(GREEN_COLOR,RED_COLOR)),
                 //new KeyFrame(SIGNAL_DURATION, event -> setNorthSouthSignal(YELLOW_COLOR, YELLOW_COLOR))
