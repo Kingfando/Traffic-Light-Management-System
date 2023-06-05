@@ -1,0 +1,156 @@
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+public class TrafficSignalApp extends Application {
+    private static final Duration SIGNAL_DURATION = Duration.seconds(5);
+    private static final Color RED_COLOR = Color.RED;
+    private static final Color YELLOW_COLOR = Color.YELLOW;
+    private static final Color GREEN_COLOR = Color.GREEN;
+
+    private Circle northSignal;
+    private Circle southSignal;
+    private Circle eastSignal;
+    private Circle westSignal;
+
+    private Text northLabel;
+    private Text southLabel;
+    private Text eastLabel;
+    private Text westLabel;
+
+    private Button startButton;
+    private Button stopButton;
+
+    private Timeline timeline;
+    private int countdown;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        northSignal = createSignal();
+        southSignal = createSignal();
+        eastSignal = createSignal();
+        westSignal = createSignal();
+
+        northLabel = createLabel("R1");
+        southLabel = createLabel("R2");
+        eastLabel = createLabel("R3");
+        westLabel = createLabel("R4");
+
+        startButton = createButton("Start");
+        stopButton = createButton("Stop");
+
+        startButton.setOnAction(event -> startTrafficSignal());
+        stopButton.setOnAction(event -> stopTrafficSignal());
+
+        VBox signalsBox = new VBox(10);
+        signalsBox.setAlignment(Pos.CENTER);
+        signalsBox.getChildren().addAll(
+                new HBox(northSignal, northLabel),
+                new HBox(eastSignal, eastLabel),
+                new HBox(southSignal, southLabel),
+                new HBox(westSignal, westLabel)
+        );
+
+        HBox buttonsBox = new HBox(10);
+        buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.getChildren().addAll(startButton, stopButton);
+
+        VBox root = new VBox(20);
+        root.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(signalsBox, buttonsBox);
+
+        Scene scene = new Scene(root, 200, 400);
+        primaryStage.setTitle("Traffic Signal App");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private Circle createSignal() {
+        Circle signal = new Circle(40);
+        signal.setFill(RED_COLOR);
+        signal.setStroke(Color.BLACK);
+        return signal;
+    }
+
+    private Text createLabel(String text) {
+        Text label = new Text(text);
+        label.setStyle("-fx-font-size: 18px;");
+        return label;
+    }
+
+    private Button createButton(String text) {
+        Button button = new Button(text);
+        button.setPrefWidth(80);
+        return button;
+    }
+
+    private void startTrafficSignal() {
+        countdown = (int) SIGNAL_DURATION.toSeconds();
+        updateCountdownLabels();
+
+        timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, event -> setNorthSouthSignal(RED_COLOR, GREEN_COLOR)),
+                new KeyFrame(SIGNAL_DURATION, event -> setNorthSouthSignal(YELLOW_COLOR, YELLOW_COLOR)),
+                new KeyFrame(SIGNAL_DURATION.multiply(2), event -> setNorthSouthSignal(RED_COLOR, RED_COLOR)),
+                new KeyFrame(SIGNAL_DURATION.multiply(3), event -> setNorthSouthSignal(YELLOW_COLOR, YELLOW_COLOR)),
+                new KeyFrame(SIGNAL_DURATION.multiply(4), event -> setNorthSouthSignal(RED_COLOR, GREEN_COLOR))
+        );
+
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+
+        Timeline countdownTimeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            countdown--;
+            updateCountdownLabels();
+        }));
+        countdownTimeline.setCycleCount((int) SIGNAL_DURATION.toSeconds());
+        countdownTimeline.play();
+    }
+
+    private void stopTrafficSignal() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        resetSignals();
+        resetCountdown();
+    }
+
+    private void setNorthSouthSignal(Color northColor, Color southColor) {
+        northSignal.setFill(northColor);
+        southSignal.setFill(southColor);
+    }
+
+    private void resetSignals() {
+        northSignal.setFill(RED_COLOR);
+        southSignal.setFill(RED_COLOR);
+        eastSignal.setFill(RED_COLOR);
+        westSignal.setFill(RED_COLOR);
+    }
+
+    private void updateCountdownLabels() {
+        northLabel.setText("R1 - " + (countdown > 0 ? countdown : 0));
+        southLabel.setText("R2 - " + (countdown > 0 ? countdown : 0));
+        eastLabel.setText("R3 - " + (countdown > 0 ? countdown : 0));
+        westLabel.setText("R4 - " + (countdown > 0 ? countdown : 0));
+    }
+
+    private void resetCountdown() {
+        countdown = 0;
+        updateCountdownLabels();
+    }
+}
