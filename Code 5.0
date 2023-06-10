@@ -1,0 +1,202 @@
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+public class APP5 extends Application {
+    private static final int TOTAL_TIME = 60;
+    private static final int QUARTER_TIME = 15;
+
+    private Circle northLight;
+    private Circle eastLight;
+    private Circle southLight;
+    private Circle westLight;
+
+    private Text northLabel;
+    private Text eastLabel;
+    private Text southLabel;
+    private Text westLabel;
+
+    private Button startButton;
+    private Button stopButton;
+    private Button resetButton;
+
+    private Timeline timeline;
+    private int currentTime;
+
+    private Color northColor;
+    private Color eastColor;
+    private Color southColor;
+    private Color westColor;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        northLight = createLight();
+        eastLight = createLight();
+        southLight = createLight();
+        westLight = createLight();
+
+        northLabel = createLabel();
+        eastLabel = createLabel();
+        southLabel = createLabel();
+        westLabel = createLabel();
+
+        startButton = createButton("Start");
+        stopButton = createButton("Stop");
+        resetButton = createButton("Reset");
+
+        startButton.setOnAction(event -> startTrafficLightControl());
+        stopButton.setOnAction(event -> stopTrafficLightControl());
+        resetButton.setOnAction(event -> resetTrafficLightControl());
+
+        GridPane lightsGrid = new GridPane();
+        lightsGrid.setAlignment(Pos.CENTER);
+        lightsGrid.setHgap(20);
+        lightsGrid.setVgap(20);
+        lightsGrid.setPadding(new Insets(20));
+        lightsGrid.add(createLightContainer(northLight, northLabel), 1, 0);
+        lightsGrid.add(createLightContainer(eastLight, eastLabel), 2, 1);
+        lightsGrid.add(createLightContainer(southLight, southLabel), 1, 2);
+        lightsGrid.add(createLightContainer(westLight, westLabel), 0, 1);
+
+        HBox buttonsBox = new HBox(10);
+        buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.getChildren().addAll(startButton, stopButton, resetButton);
+
+        VBox root = new VBox(20);
+        root.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(lightsGrid, buttonsBox);
+
+        Scene scene = new Scene(root, 400, 400);
+        primaryStage.setTitle("Traffic Light App");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private VBox createLightContainer(Circle light, Text label) {
+        VBox container = new VBox(10);
+        container.setAlignment(Pos.CENTER);
+        container.getChildren().addAll(light, label);
+        return container;
+    }
+
+    private Circle createLight() {
+        Circle light = new Circle(40);
+        light.setFill(Color.GREY);
+        light.setStroke(Color.BLACK);
+        return light;
+    }
+
+    private Text createLabel() {
+        Text label = new Text("15");
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        return label;
+    }
+
+    private Button createButton(String text) {
+        Button button = new Button(text);
+        button.setPrefWidth(80);
+        return button;
+    }
+
+    private void startTrafficLightControl() {
+        if (timeline != null && timeline.getStatus() == Animation.Status.RUNNING) {
+            return;
+        }
+
+        timeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), event -> {
+                    currentTime++;
+                    if (currentTime > TOTAL_TIME) {
+                        currentTime = 0;
+                    }
+                    setColorsForCurrentTime();
+                })
+        );
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    private void stopTrafficLightControl() {
+        if (timeline != null && timeline.getStatus() == Animation.Status.RUNNING) {
+            timeline.pause();
+            setColorsToGrey();
+        }
+    }
+
+    private void resetTrafficLightControl() {
+        if (timeline != null && timeline.getStatus() == Animation.Status.RUNNING) {
+            timeline.stop();
+        }
+        currentTime = 0;
+        setColorsToGrey();
+        updateCountdownLabels();
+    }
+
+    private void setColorsForCurrentTime() {
+        if (currentTime >= 0 && currentTime < QUARTER_TIME) {
+            northColor = Color.RED;
+            eastColor = Color.RED;
+            southColor = Color.GREEN;
+            westColor = Color.YELLOW;
+        } else if (currentTime >= QUARTER_TIME && currentTime < QUARTER_TIME * 2) {
+            northColor = Color.YELLOW;
+            eastColor = Color.RED;
+            southColor = Color.RED;
+            westColor = Color.GREEN;
+        } else if (currentTime >= QUARTER_TIME * 2 && currentTime < QUARTER_TIME * 3) {
+            northColor = Color.GREEN;
+            eastColor = Color.YELLOW;
+            southColor = Color.RED;
+            westColor = Color.RED;
+        } else {
+            northColor = Color.RED;
+            eastColor = Color.GREEN;
+            southColor = Color.YELLOW;
+            westColor = Color.RED;
+        }
+
+        northLight.setFill(northColor);
+        eastLight.setFill(eastColor);
+        southLight.setFill(southColor);
+        westLight.setFill(westColor);
+
+        updateCountdownLabels();
+    }
+
+    private void setColorsToGrey() {
+        northColor = Color.GREY;
+        eastColor = Color.GREY;
+        southColor = Color.GREY;
+        westColor = Color.GREY;
+
+        northLight.setFill(northColor);
+        eastLight.setFill(eastColor);
+        southLight.setFill(southColor);
+        westLight.setFill(westColor);
+    }
+
+    private void updateCountdownLabels() {
+        int remainingTime = QUARTER_TIME - (currentTime % QUARTER_TIME);
+        northLabel.setText(Integer.toString(remainingTime));
+        eastLabel.setText(Integer.toString(remainingTime));
+        southLabel.setText(Integer.toString(remainingTime));
+        westLabel.setText(Integer.toString(remainingTime));
+    }
+}
