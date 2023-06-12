@@ -1,0 +1,54 @@
+
+1. Import Statements:
+   - The code begins with importing the necessary JavaFX classes and interfaces to use in the application.
+
+2. Class Declaration:
+   - The code declares a public class named `APP5` that extends the `Application` class, which is the main entry point for JavaFX applications.
+
+3. Constants:
+   - The code defines two constant variables: `TOTAL_TIME` and `QUARTER_TIME`. These variables hold the total time and quarter time values for the traffic light control.
+
+4. Instance Variables:
+   - The code declares several instance variables to represent the different elements of the traffic light control application:
+     - `northLight`, `eastLight`, `southLight`, `westLight`: `Circle` objects representing the traffic light circles.
+     - `northLabel`, `eastLabel`, `southLabel`, `westLabel`: `Text` objects representing the countdown labels.
+     - `startButton`, `stopButton`, `resetButton`: `Button` objects for controlling the traffic light.
+     - `timeline`: `Timeline` object for updating the traffic light states.
+     - `currentTime`: an `int` variable to store the current time of the traffic light control.
+     - `northColor`, `eastColor`, `southColor`, `westColor`: `Color` objects to store the current colors of the traffic lights.
+
+5. Main Method:
+   - The `main` method is the entry point of the application. It simply launches the JavaFX application by calling the `launch` method and passing the command-line arguments.
+
+6. Start Method:
+   - The `start` method is the main method of the JavaFX application. It is overridden from the `Application` class.
+   - The method takes a `Stage` object as a parameter, which represents the primary stage of the JavaFX application.
+   - Inside the method, the UI components of the traffic light control application are created and organized using various layout containers.
+   - The UI components include the traffic light circles, countdown labels, control buttons, menu bar, and the main root container.
+   - Finally, the method sets the scene with the root container, configures the stage, and displays it.
+
+7. Helper Methods:
+   - The code includes several helper methods to create and configure UI components:
+     - `createLightContainer`: Creates a `VBox` container for a traffic light circle and its corresponding label.
+     - `createLight`: Creates a `Circle` object representing a traffic light with default color and size.
+     - `createLabel`: Creates a `Text` object representing a countdown label with a default font and size.
+     - `createButton`: Creates a `Button` object with the specified text and default width.
+     - `createMenuBar`: Creates a `MenuBar` with File and Help menus.
+     - `showAboutDialog`: Displays an about dialog with information about the app.
+
+8. Event Handler Methods:
+   - The code includes event handler methods for the control buttons:
+     - `startTrafficLightControl`: Starts the traffic light control by creating a timeline to update the traffic light states every second.
+     - `stopTrafficLightControl`: Stops the traffic light control by pausing the timeline and setting all traffic lights to grey.
+     - `resetTrafficLightControl`: Resets the traffic light control by stopping the timeline, resetting the current time to 0, and setting all traffic lights to grey.
+     - `setColorsForCurrentTime`: Updates the traffic light colors based on the current time.
+     - `setColorsToGrey`: Sets all traffic light colors to grey.
+     - `updateCountdownLabels`: Updates the countdown labels based on the remaining time.
+
+9. Execution:
+   - The
+
+ `launch` method is called in the `main` method to start the JavaFX application.
+   - The `start` method is automatically invoked by the JavaFX framework to initialize and display the application's user interface.
+
+That's a detailed explanation of the provided code. It sets up a simple traffic light control application with the ability to start, stop, and reset the traffic light states using buttons. The traffic light colors and countdown labels are updated based on the current time. The application also includes a menu bar with options to exit the application and display an about dialog.
