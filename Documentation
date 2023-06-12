@@ -1,0 +1,333 @@
+/**
+ * Traffic Light App Documentation
+ *
+ * This JavaFX application simulates a traffic light control system. It displays four traffic lights
+ * (North, East, South, and West) and provides buttons to start, stop, and reset the control system.
+ * The traffic lights change colors based on a predefined time interval, simulating the traffic flow.
+ *
+ * The Traffic Light App class extends the JavaFX Application class and overrides the start() method
+ * to create and display the user interface. It initializes the necessary components, such as circles
+ * representing the traffic lights, countdown labels, and buttons. The UI is organized using various layout
+ * containers like VBox, HBox, GridPane, and BorderPane.
+ *
+ * Class Structure:
+ * - Constants:
+ *   - TOTAL_TIME: Total duration of the traffic light control system in seconds.
+ *   - QUARTER_TIME: Duration for each traffic light state (Red, Yellow, Green) in seconds.
+ *
+ * - Instance Variables:
+ *   - northLight, eastLight, southLight, westLight: Circle objects representing the four traffic lights.
+ *   - northLabel, eastLabel, southLabel, westLabel: Text objects displaying countdown times for each traffic light.
+ *   - startButton, stopButton, resetButton: Buttons to control the traffic light system.
+ *   - timeline: JavaFX Timeline object for updating the traffic light states.
+ *   - currentTime: Current time of the traffic light control system.
+ *   - northColor, eastColor, southColor, westColor: Color objects representing the current colors of the traffic lights.
+ *
+ * - Methods:
+ *   - main(String[] args): The entry point of the application. It launches the JavaFX application.
+ *   - start(Stage primaryStage): Override method to create and display the UI components.
+ *   - createLightContainer(Circle light, Text label): Helper method to create a container for a traffic light and its label.
+ *   - createLight(): Helper method to create a Circle object representing a traffic light.
+ *   - createLabel(): Helper method to create a Text object for displaying countdown time.
+ *   - createButton(String text): Helper method to create a Button object with the specified text.
+ *   - startTrafficLightControl(): Event handler method for the "Start" button. Starts the traffic light control system.
+ *   - stopTrafficLightControl(): Event handler method for the "Stop" button. Stops the traffic light control system.
+ *   - resetTrafficLightControl(): Event handler method for the "Reset" button. Resets the traffic light control system.
+ *   - setColorsForCurrentTime(): Updates the traffic light colors based on the current time.
+ *   - setColorsToGrey(): Resets all traffic light colors to grey.
+ *   - updateCountdownLabels(): Updates the countdown labels based on the remaining time.
+ *   - createMenuBar(): Creates a MenuBar with File and Help menus.
+ *   - showAboutDialog(): Displays an about dialog with information about the app.
+ */
+
+// Import necessary JavaFX classes
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+public class APP5 extends Application {
+    // Constants
+    private static final int TOTAL_TIME = 60;
+    private static final int QUARTER_TIME = 15;
+
+    // Traffic light circles
+    private Circle northLight;
+    private Circle eastLight;
+    private
+
+ Circle southLight;
+    private Circle westLight;
+
+    // Countdown labels
+    private Text northLabel;
+    private Text eastLabel;
+    private Text southLabel;
+    private Text westLabel;
+
+    // Control buttons
+    private Button startButton;
+    private Button stopButton;
+    private Button resetButton;
+
+    // Timeline for updating traffic light states
+    private Timeline timeline;
+    private int currentTime;
+
+    // Traffic light colors
+    private Color northColor;
+    private Color eastColor;
+    private Color southColor;
+    private Color westColor;
+
+    public static void main(String[] args) {
+        // Entry point of the application
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        // Create and configure the UI components
+
+        // Create traffic light circles
+        northLight = createLight();
+        eastLight = createLight();
+        southLight = createLight();
+        westLight = createLight();
+
+        // Create countdown labels
+        northLabel = createLabel();
+        eastLabel = createLabel();
+        southLabel = createLabel();
+        westLabel = createLabel();
+
+        // Create control buttons
+        startButton = createButton("Start");
+        stopButton = createButton("Stop");
+        resetButton = createButton("Reset");
+
+        // Register event handlers for buttons
+        startButton.setOnAction(event -> startTrafficLightControl());
+        stopButton.setOnAction(event -> stopTrafficLightControl());
+        resetButton.setOnAction(event -> resetTrafficLightControl());
+
+        // Create grid for traffic lights
+        GridPane lightsGrid = new GridPane();
+        lightsGrid.setAlignment(Pos.CENTER);
+        lightsGrid.setHgap(20);
+        lightsGrid.setVgap(20);
+        lightsGrid.setPadding(new Insets(20));
+        lightsGrid.add(createLightContainer(northLight, northLabel), 1, 0);
+        lightsGrid.add(createLightContainer(eastLight, eastLabel), 2, 1);
+        lightsGrid.add(createLightContainer(southLight, southLabel), 1, 2);
+        lightsGrid.add(createLightContainer(westLight, westLabel), 0, 1);
+
+        // Create horizontal box for buttons
+        HBox buttonsBox = new HBox(10);
+        buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.getChildren().addAll(startButton, stopButton, resetButton);
+
+        // Create vertical box as root container
+        VBox root = new VBox(20);
+        root.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(lightsGrid, buttonsBox);
+
+        // Create menu bar
+        MenuBar menuBar = createMenuBar();
+
+        // Create border pane and set menu bar and root container as its children
+        BorderPane borderPane = new BorderPane();
+        borderPane.setTop(menuBar);
+        borderPane.setCenter(root);
+
+        // Create the scene with a specific size
+        Scene scene = new Scene(borderPane, 400, 400);
+
+        // Configure the primary stage and show the scene
+        primaryStage.setTitle("Traffic Light App");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    // Helper method to create a container for a traffic light and its label
+    private VBox createLightContainer(Circle light, Text label) {
+        VBox container = new VBox(10);
+        container.setAlignment(Pos.CENTER);
+        container.getChildren().addAll(light, label);
+        return container;
+    }
+
+    // Helper method to create a Circle object representing a traffic light
+    private Circle createLight() {
+        Circle light = new Circle(40);
+        light.setFill(Color.GREY);
+        light.setStroke(Color.BLACK);
+        return light;
+    }
+
+    // Helper method to create a Text object for displaying countdown time
+    private Text createLabel() {
+        Text label = new Text("15");
+        label.setFont(Font.font("
+
+Arial", FontWeight.BOLD, 18));
+        return label;
+    }
+
+    // Helper method to create a Button object with the specified text
+    private Button createButton(String text) {
+        Button button = new Button(text);
+        button.setPrefWidth(80);
+        return button;
+    }
+
+    // Event handler method for the "Start" button
+    private void startTrafficLightControl() {
+        // Check if the traffic light control is already running
+        if (timeline != null && timeline.getStatus() == Animation.Status.RUNNING) {
+            return;
+        }
+
+        // Create a new Timeline for updating the traffic light states
+        timeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), event -> {
+                    currentTime++;
+                    if (currentTime > TOTAL_TIME) {
+                        currentTime = 0;
+                    }
+                    setColorsForCurrentTime();
+                })
+        );
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    // Event handler method for the "Stop" button
+    private void stopTrafficLightControl() {
+        // Check if the traffic light control is running
+        if (timeline != null && timeline.getStatus() == Animation.Status.RUNNING) {
+            timeline.pause();
+            setColorsToGrey();
+        }
+    }
+
+    // Event handler method for the "Reset" button
+    private void resetTrafficLightControl() {
+        // Check if the traffic light control is running
+        if (timeline != null && timeline.getStatus() == Animation.Status.RUNNING) {
+            timeline.stop();
+        }
+        currentTime = 0;
+        setColorsToGrey();
+        updateCountdownLabels();
+    }
+
+    // Updates the traffic light colors based on the current time
+    private void setColorsForCurrentTime() {
+        if (currentTime >= 0 && currentTime < QUARTER_TIME) {
+            northColor = Color.RED;
+            eastColor = Color.RED;
+            southColor = Color.GREEN;
+            westColor = Color.YELLOW;
+        } else if (currentTime >= QUARTER_TIME && currentTime < QUARTER_TIME * 2) {
+            northColor = Color.YELLOW;
+            eastColor = Color.RED;
+            southColor = Color.RED;
+            westColor = Color.GREEN;
+        } else if (currentTime >= QUARTER_TIME * 2 && currentTime < QUARTER_TIME * 3) {
+            northColor = Color.GREEN;
+            eastColor = Color.YELLOW;
+            southColor = Color.RED;
+            westColor = Color.RED;
+        } else {
+            northColor = Color.RED;
+            eastColor = Color.GREEN;
+            southColor = Color.YELLOW;
+            westColor = Color.RED;
+        }
+
+        // Update traffic light colors
+        northLight.setFill(northColor);
+        eastLight.setFill(eastColor);
+        southLight.setFill(southColor);
+        westLight.setFill(westColor);
+
+        // Update countdown labels
+        updateCountdownLabels();
+    }
+
+    // Resets all traffic light colors to grey
+    private void setColorsToGrey() {
+        northColor = Color.GREY;
+        eastColor = Color.GREY;
+        southColor = Color.GREY;
+        westColor = Color.GREY;
+
+        // Update traffic light colors
+        northLight.setFill(northColor);
+        eastLight.setFill(eastColor);
+        southLight.setFill(southColor);
+        westLight.setFill(westColor);
+    }
+
+    // Updates the countdown labels based on the remaining time
+    private void updateCountdownLabels() {
+        int remainingTime = QUARTER_TIME - (currentTime % QUARTER_TIME);
+        northLabel.setText(Integer.toString(remainingTime));
+        eastLabel.setText(Integer.toString(remainingTime));
+        southLabel.setText(Integer.toString(remainingTime));
+        westLabel.setText(Integer.toString(remainingTime));
+    }
+
+
+
+    // Creates a MenuBar with File and Help menus
+    private MenuBar createMenuBar() {
+        // Create File menu
+        Menu fileMenu = new Menu("File");
+
+        // Create Exit menu item
+        MenuItem exitMenuItem = new MenuItem("Exit");
+        exitMenuItem.setOnAction(event -> System.exit(0));
+
+        // Add menu items to File menu
+        fileMenu.getItems().add(exitMenuItem);
+
+        // Create Help menu
+        Menu helpMenu = new Menu("Help");
+
+        // Create About menu item
+        MenuItem aboutMenuItem = new MenuItem("About");
+        aboutMenuItem.setOnAction(event -> showAboutDialog());
+
+        // Add menu items to Help menu
+        helpMenu.getItems().add(aboutMenuItem);
+
+        // Create MenuBar and add menus
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().addAll(fileMenu, helpMenu);
+
+        return menuBar;
+    }
+
+    // Displays an about dialog with information about the app
+    private void showAboutDialog() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About Traffic Light App");
+        alert.setHeaderText("Traffic Light App v1.0");
+        alert.setContentText("This app simulates a traffic light control system using JavaFX.");
+        alert.showAndWait();
+    }
+}
