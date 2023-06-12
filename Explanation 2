@@ -1,0 +1,192 @@
+
+```java
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+```
+- These lines import the necessary classes and interfaces from the JavaFX library that are required for building the application.
+
+```java
+public class APP5 extends Application {
+```
+- This line declares a public class named `APP5` that extends the `Application` class. It serves as the main class for the application.
+
+```java
+    private static final int TOTAL_TIME = 60;
+    private static final int QUARTER_TIME = 15;
+```
+- These lines define two constant variables: `TOTAL_TIME` and `QUARTER_TIME`. These constants hold the total time for the traffic light cycle and the time for each quarter of the cycle.
+
+```java
+    private Circle northLight;
+    private Circle eastLight;
+    private Circle southLight;
+    private Circle westLight;
+```
+- These lines declare instance variables of type `Circle` that represent the four traffic lights: `northLight`, `eastLight`, `southLight`, and `westLight`.
+
+```java
+    private Text northLabel;
+    private Text eastLabel;
+    private Text southLabel;
+    private Text westLabel;
+```
+- These lines declare instance variables of type `Text` that represent the countdown labels associated with each traffic light: `northLabel`, `eastLabel`, `southLabel`, and `westLabel`.
+
+```java
+    private Button startButton;
+    private Button stopButton;
+    private Button resetButton;
+```
+- These lines declare instance variables of type `Button` that represent the control buttons: `startButton`, `stopButton`, and `resetButton`.
+
+```java
+    private Timeline timeline;
+    private int currentTime;
+```
+- These lines declare instance variables: `timeline`, which is a `Timeline` object used for controlling the traffic light animation, and `currentTime`, which stores the current time of the traffic light control.
+
+```java
+    private Color northColor;
+    private Color eastColor;
+    private Color southColor;
+    private Color westColor;
+```
+- These lines declare instance variables of type `Color` that represent the current colors of each traffic light: `northColor`, `eastColor`, `southColor`, and `westColor`.
+
+```java
+    public static void main(String[] args) {
+        launch(args);
+    }
+```
+- This is the main method of the application. It serves as the entry point for the Java program. It simply calls the `launch` method of the `Application` class and passes the command-line arguments.
+
+```java
+    @Override
+    public void start(Stage primaryStage) {
+```
+- This method is the main entry point for the JavaFX application. It is overridden from the `Application` class. It takes a `Stage` object as a parameter, which represents the primary stage of the application.
+
+```java
+        northLight = createLight();
+        eastLight = createLight();
+        southLight = createLight();
+        westLight = createLight();
+```
+- These lines initialize the traffic light circles by calling the `createLight` method, and assign them to the respective instance variables.
+
+```java
+        northLabel = createLabel();
+        eastLabel = createLabel();
+        southLabel = createLabel();
+        westLabel = createLabel();
+```
+- These
+
+ lines initialize the countdown labels by calling the `createLabel` method, and assign them to the respective instance variables.
+
+```java
+        startButton = createButton("Start");
+        stopButton = createButton("Stop");
+        resetButton = createButton("Reset");
+```
+- These lines initialize the control buttons by calling the `createButton` method, and assign them to the respective instance variables.
+
+```java
+        startButton.setOnAction(event -> startTrafficLightControl());
+        stopButton.setOnAction(event -> stopTrafficLightControl());
+        resetButton.setOnAction(event -> resetTrafficLightControl());
+```
+- These lines define the event handlers for the control buttons using lambda expressions. When each button is clicked, it triggers the corresponding method: `startTrafficLightControl()`, `stopTrafficLightControl()`, or `resetTrafficLightControl()`.
+
+```java
+        GridPane lightsGrid = new GridPane();
+        lightsGrid.setAlignment(Pos.CENTER);
+        lightsGrid.setHgap(20);
+        lightsGrid.setVgap(20);
+        lightsGrid.setPadding(new Insets(20));
+        lightsGrid.add(createLightContainer(northLight, northLabel), 1, 0);
+        lightsGrid.add(createLightContainer(eastLight, eastLabel), 2, 1);
+        lightsGrid.add(createLightContainer(southLight, southLabel), 1, 2);
+        lightsGrid.add(createLightContainer(westLight, westLabel), 0, 1);
+```
+- These lines create a `GridPane` named `lightsGrid` to arrange the traffic lights and labels. The grid pane is configured with alignment, horizontal and vertical gaps, and padding.
+- The traffic lights and labels are added to the grid pane using the `createLightContainer` method, which creates a container (`VBox`) for a traffic light circle and its label. The `add` method is used to position the containers in the grid pane.
+
+```java
+        HBox buttonsBox = new HBox(10);
+        buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.getChildren().addAll(startButton, stopButton, resetButton);
+```
+- These lines create an `HBox` named `buttonsBox` to hold the control buttons. The box is configured with alignment and spacing.
+- The control buttons (`startButton`, `stopButton`, `resetButton`) are added to the box using the `getChildren` method and the `addAll` method.
+
+```java
+        VBox root = new VBox(20);
+        root.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(lightsGrid, buttonsBox);
+```
+- These lines create a `VBox` named `root` to serve as the main root container for the application. The box is configured with alignment and spacing.
+- The grid pane (`lightsGrid`) and the buttons box (`buttonsBox`) are added to the root container using the `getChildren` method and the `addAll` method.
+
+```java
+        MenuBar menuBar = createMenuBar();
+        BorderPane borderPane = new BorderPane();
+        borderPane.setTop(menuBar);
+        borderPane.setCenter(root);
+```
+- These lines create a menu bar (`MenuBar`) by calling the `createMenuBar` method.
+- A `BorderPane` named `borderPane` is created to organize the menu bar and the root container. The menu bar is set as the top component, and the root container is set as the center component of the border pane.
+
+```java
+        Scene scene = new Scene(borderPane, 400, 400);
+        primaryStage.setTitle("Traffic Light App");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+```
+- These lines create a new scene (`Scene`) with the border pane as the root node and a specified width and height.
+- The title of the primary stage
+
+ (`Stage`) is set to "Traffic Light App".
+- The scene is set as the scene of the primary stage, and the primary stage is displayed.
+
+The remaining methods in the code provide various utility functions and event handlers used by the application. They are as follows:
+
+- `createLightContainer(Circle light, Text label)`: This method creates a `VBox` container for a traffic light circle and its associated label.
+
+- `createLight()`: This method creates a `Circle` object representing a traffic light.
+
+- `createLabel()`: This method creates a `Text` object representing the countdown label.
+
+- `createButton(String text)`: This method creates a `Button` object with the specified text.
+
+- `startTrafficLightControl()`: This method starts the traffic light control by creating a timeline and setting up an event handler to update the traffic light colors and countdown labels based on the current time.
+
+- `stopTrafficLightControl()`: This method stops the traffic light control by pausing the timeline and setting all traffic light colors to grey.
+
+- `resetTrafficLightControl()`: This method resets the traffic light control by stopping the timeline, resetting the current time to zero, and setting all traffic light colors to grey.
+
+- `setColorsForCurrentTime()`: This method sets the traffic light colors based on the current time and updates the countdown labels.
+
+- `setColorsToGrey()`: This method sets all traffic light colors to grey.
+
+- `updateCountdownLabels()`: This method updates the countdown labels by calculating the remaining time for each traffic light.
+
+- `createMenuBar()`: This method creates a `MenuBar` with "File" and "Help" menus, including menu items for exiting the application and showing an about dialog.
+
+- `showAboutDialog()`: This method displays an alert dialog with information about the application.
+
+I hope this explanation helps you understand the code in detail!
